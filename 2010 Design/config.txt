@@ -1,0 +1,30 @@
+
+Config procedure:
+	1. Attempt configure at component level
+		- if address complete set address and return (any 0 octet means incomplete: ex 0.2.1 still needs subs number)
+	2. Attempt to configure at node level interface
+		- if address complete set and return
+	3. If component has subs interface
+			- Attempt to configure subs level address
+			- if address complete then set and return
+			- else assume first cmpt on system 1.1.1, set and return
+	   else If static subs config set and return
+	   else wait and continue to query node server or node broadcast
+
+
+Server Based Configuration Attempt:
+
+	1. Configuration client service starts up
+	2. Client loads Server UDP address from file
+	3. Creates new configuration address request message (which extends JUDP Message)
+	4. Sets the UDP address to server address
+	5. Sends config request direct to JUDP transport interface
+	
+	... wait for server ... 
+		if timeout, then send request again
+	
+	6. Response from server comes in on JUDP interface
+	7. Gets unpacked into request response message
+	8. Gets put onto receive queue for service
+	9. Caught by configuration client service
+	10. Client sets JAUS Address of component
